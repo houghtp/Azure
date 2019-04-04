@@ -1,7 +1,7 @@
 #Requires -Version 3.0
 
 Param(
-    [string] [Parameter(Mandatory=$true)] $ResourceGroupLocation = "uk south",
+    [string] [Parameter(Mandatory=$true)] $ResourceGroupLocation,
     [string] $ResourceGroupName = 'rg-base-prod-uks',
     [switch] $UploadArtifacts,
     [string] $StorageAccountName,
@@ -12,10 +12,6 @@ Param(
     [string] $DSCSourceFolder = 'DSC',
     [switch] $ValidateOnly
 )
-
-#login-azaccount
-
-#Select-AzSubscription caea1c66-8f8c-4f61-928a-e385e42edbfb
 
 try {
     [Microsoft.Azure.Common.Authentication.AzureSession]::ClientFactory.AddUserAgent("VSAzureTools-$UI$($host.name)".replace(' ','_'), '3.0.0')

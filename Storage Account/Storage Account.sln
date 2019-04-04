@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.539
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "Storage Account", "Storage Account\Storage Account.deployproj", "{7D71BB94-57F6-4A4E-B0C3-0098596A34C7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7D71BB94-57F6-4A4E-B0C3-0098596A34C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D71BB94-57F6-4A4E-B0C3-0098596A34C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D71BB94-57F6-4A4E-B0C3-0098596A34C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D71BB94-57F6-4A4E-B0C3-0098596A34C7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {018EDD05-87EF-4EAC-B869-74D68A83E9EB}
+	EndGlobalSection
+EndGlobal

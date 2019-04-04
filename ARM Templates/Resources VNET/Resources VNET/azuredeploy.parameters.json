@@ -10,72 +10,32 @@
             "name": "vnet_cidr",
             "addressPrefix": "172.22.0.0/16"
           }
-        ],
-        "subnets": [
-          {
-            "name": "sub-web-private-prod-uks",
-            "addressPrefix": "172.22.0.0/24"
-          },
-          {
-            "name": "sub-app-private-prod-uks",
-            "addressPrefix": "172.22.1.0/24"
-          },
-          {
-            "name": "sub-db-private-prod-uks",
-            "addressPrefix": "172.22.2.0/24"
-          },
-          {
-            "name": "sub-infrastructure-private-prod-uks",
-            "addressPrefix": "172.22.3.0/24"
-          },
-          {
-            "name": "sub-management-private-prod-uks",
-            "addressPrefix": "172.22.4.0/24"
-          } 
         ]
       }
-    }
-  }
-}
-
-{
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "vnetSettings": {
-      "value": {
-        "name": "vnet-private-prod-uks",
-        "addressPrefixes": [
-          {
-            "name": "vnet_cidr",
-            "addressPrefix": "172.22.0.0/16"
-          }
-        ],
-	},
-	"Subnets":{
-		"value":[
-		  {
-			"name": "sub-web-private-prod-uks",
-			"addressPrefix": "172.22.0.0/24"
-		  },
-		  {
-			"name": "sub-app-private-prod-uks",
-			"addressPrefix": "172.22.1.0/24"
-		  },
-		  {
-			"name": "sub-db-private-prod-uks",
-			"addressPrefix": "172.22.2.0/24"
-		  },
-		  {
-			"name": "sub-infrastructure-private-prod-uks",
-			"addressPrefix": "172.22.3.0/24"
-		  },
-		  {
-			"name": "sub-management-private-prod-uks",
-			"addressPrefix": "172.22.4.0/24"
-		  } 			
-		]
-      }
+    },
+    "subnetSettings": {
+      "value": [
+        {
+          "name": "sub-web-private-prod-uks",
+          "addressPrefix": "172.22.0.0/24"
+        },
+        {
+          "name": "sub-app-private-prod-uks",
+          "addressPrefix": "172.22.1.0/24"
+        },
+        {
+          "name": "sub-db-private-prod-uks",
+          "addressPrefix": "172.22.2.0/24"
+        },
+        {
+          "name": "sub-infrastructure-private-prod-uks",
+          "addressPrefix": "172.22.3.0/24"
+        },
+        {
+          "name": "sub-management-private-prod-uks",
+          "addressPrefix": "172.22.4.0/24"
+        }
+      ]
     }
   }
 }

@@ -3,10 +3,12 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "vnetSettings": {
-      "type":  "object"
+      "type": "object"
+    },
+    "subnetSettings": {
+      "type": "array"
     }
   },
-  "variables": {},
   "resources": [
     {
       "name": "[parameters('vnetSettings').name]",
@@ -23,70 +25,37 @@
           "addressPrefixes": [
             "[parameters('vnetSettings').addressPrefixes[0].addressPrefix]"
           ]
-        },
-        "subnets": [
+        }
+      }
+    },
+    {
+      "copy": {
+        "name": "subnetLoop",
+        "count": "[length(parameters('subnetSettings'))]",
+        "mode": "Serial"
+      },
+      "apiVersion": "2018-12-01",
+      "type": "Microsoft.Network/virtualNetworks/subnets",
+      "name": "[concat(parameters('vnetSettings').name, '/', parameters('subnetSettings')[copyIndex()].name)]",
+      "properties": {
+        "addressPrefix": "[parameters('subnetSettings')[copyIndex()].addressPrefix]",
+        "serviceEndpoints": [
           {
-            "name": "[parameters('vnetSettings').subnets[0].name]",
-            "properties": {
-              "addressPrefix": "[parameters('vnetSettings').subnets[0].addressPrefix]",
-              "serviceEndpoints": [
-                {
-                  "provisioningState": "Succeeded",
-                  "service": "Microsoft.Storage",
-                  "locations": [
-                    "uksouth",
-                    "ukwest"
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "name": "[parameters('vnetSettings').subnets[1].name]",
-            "properties": {
-              "addressPrefix": "[parameters('vnetSettings').subnets[1].addressPrefix]",
-              "serviceEndpoints": [
-                {
-                  "provisioningState": "Succeeded",
-                  "service": "Microsoft.Storage",
-                  "locations": [
-                    "uksouth",
-                    "ukwest"
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "name": "[parameters('vnetSettings').subnets[2].name]",
-            "properties": {
-              "addressPrefix": "[parameters('vnetSettings').subnets[2].addressPrefix]",
-              "serviceEndpoints": [
-                {
-                  "provisioningState": "Succeeded",
-                  "service": "Microsoft.Storage",
-                  "locations": [
-                    "uksouth",
-                    "ukwest"
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "name": "[parameters('vnetSettings').subnets[3].name]",
-            "properties": {
-              "addressPrefix": "[parameters('vnetSettings').subnets[3].addressPrefix]"
-            }
-          },
-          {
-            "name": "[parameters('vnetSettings').subnets[4].name]",
-            "properties": {
-              "addressPrefix": "[parameters('vnetSettings').subnets[4].addressPrefix]"
-            }
+            "provisioningState": "Succeeded",
+            "service": "Microsoft.Storage",
+            "locations": [
+              "uksouth",
+              "ukwest"
+            ]
           }
         ]
-      }
-    }],
+      },
+      "dependsOn": [
+        "[parameters('vnetSettings').name]"
+      ]
+    }
+  ],
+  "variables": {
+  },
   "outputs": {}
 }

@@ -1,0 +1,64 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "storageAccountNamePrefix": {
+      "type": "string"
+    },
+    "accountType": {
+      "type": "string",
+        "defaultValue": "Standard_LRS"
+    },
+    "kind": {
+      "type": "string",
+      "defaultValue": "StorageV2"
+    },
+    "accessTier": {
+      "type": "string",
+        "defaultValue": "Hot"
+    }
+  },
+  "variables": {
+    "resourceGroupLocation": "[resourceGroup().location]",
+    "storageAccountName": "[concat('sa',parameters('storageAccountNamePrefix'),'prod',variables('resourceGroupLocation'))]",
+    "httpsOnly": "true",
+    "softDeleteEnabled": "true",
+    "softDeleteRetentionDays": 7
+  },
+  "resources": [
+    {
+      "name": "[variables('storageAccountName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2018-07-01",
+      "location": "[variables('resourceGroupLocation')]",
+      "properties": {
+        "accessTier": "[parameters('accessTier')]",
+        "supportsHttpsTrafficOnly": "[variables('httpsOnly')]"
+      },
+      "dependsOn": [],
+      "sku": {
+        "name": "[parameters('accountType')]"
+      },
+      "kind": "[parameters('kind')]",
+      "tags": {
+        "Environment": "",
+        "Department": ""
+      }
+    },
+    {
+      "name": "[concat(variables('storageAccountName'), '/default')]",
+      "type": "Microsoft.Storage/storageAccounts/blobServices",
+      "apiVersion": "2018-07-01",
+      "properties": {
+        "deleteRetentionPolicy": {
+          "enabled": "[variables('softDeleteEnabled')]",
+          "days": "[variables('softDeleteRetentionDays')]"
+        }
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ]
+    }
+  ],
+  "outputs": {}
+}
