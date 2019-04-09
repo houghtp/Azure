@@ -5,7 +5,6 @@
     "environment": {
       "type": "string",
       "allowedValues": [ "dev", "prod" ],
-      "defaultValue": "dev",
       "metadata": {
         "description": "String to determine which network the VM is deployed to."
       }
@@ -47,7 +46,7 @@
   },
   "resources": [
     {
-      "name": "[variables('storageAccountName')]",
+      "name": "[variables('storageAccountName').tolower]",
       "type": "Microsoft.Storage/storageAccounts",
       "apiVersion": "2018-07-01",
       "location": "[variables('resourceGroupLocation')]",

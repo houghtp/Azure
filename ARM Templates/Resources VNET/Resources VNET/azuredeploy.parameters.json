@@ -4,7 +4,7 @@
   "parameters": {
     "vnetSettings": {
       "value": {
-        "name": "vnet-private-prod-uks",
+        "name": "vnet-public-prod-uks",
         "addressPrefixes": [
           {
             "name": "vnet_cidr",
