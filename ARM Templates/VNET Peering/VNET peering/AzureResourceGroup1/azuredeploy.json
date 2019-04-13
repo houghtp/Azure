@@ -1,0 +1,56 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "existingTransitVirtualNetworkName": {
+      "type": "string",
+      "metadata": {
+        "description": "Set the local VNet name. This should be the Transit VNET."
+      }
+    },
+    "existingRemoteVirtualNetworkName": {
+      "type": "string",
+      "metadata": {
+        "description": "Set the remote VNet name. This should be the Resources VNET."
+      }
+    },
+  },
+  "variables": {
+    "transitVNet": "[resourceId('Microsoft.Network/virtualNetworks', parameters('existingTransitVirtualNetworkName'))]",
+    "remoteVNet": "[resourceId('Microsoft.Network/virtualNetworks', parameters('existingRemoteVirtualNetworkName'))]",
+    "peeringName1": "[concat(parameters('existingTransitVirtualNetworkName'), '/', parameters('existingTransitVirtualNetworkName'),'-to-',parameters('existingRemoteVirtualNetworkName'))]",
+    "peeringName2": "[concat(parameters('existingRemoteVirtualNetworkName'), '/', parameters('existingRemoteVirtualNetworkName'),'-to-',parameters('existingTransitVirtualNetworkName'))]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2016-06-01",
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "name": "[variables('peeringName1')]",
+      "location": "resourceGroup().Location",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": false,
+        "allowGatewayTransit": true,
+        "useRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "[variables('remoteVNet')]"
+        }
+      }
+    },
+    {
+      "apiVersion": "2016-06-01",
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "name": "[variables('peeringName2')]",
+      "location": "resourceGroup().Location",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": false,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": true,
+        "remoteVirtualNetwork": {
+          "id": "[variables('transitVNet')]"
+        }
+      }
+    }
+  ]
+}

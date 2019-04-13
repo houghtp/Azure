@@ -1,0 +1,98 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "department": {
+      "type": "string"
+    },
+    "publicOrPrivate": {
+      "type": "string",
+      "allowedValues": [ "public", "private" ]
+    },
+    "environment": {
+      "type": "string",
+      "allowedValues": [ "prod", "dev" ]
+    },
+    "networkSecurityGroupsSettings": {
+      "type": "object"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[concat('nsg-',parameters('networkSecurityGroupsSettings').name,'-',parameters('publicOrPrivate'),'-',parameters('environment'),'-',resourceGroup().location)]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "securityRules": []
+      },
+      "tags": {
+        "Environment": "[parameters('environment')]",
+        "Department": "[parameters('department')]"
+      }
+    },
+    {
+      "apiVersion": "2017-06-01",
+      "type": "Microsoft.Resources/deployments",
+      "name": "loop-0",
+      "dependsOn": [
+        "[concat('nsg-',parameters('networkSecurityGroupsSettings').name,'-',parameters('publicOrPrivate'),'-',parameters('environment'),'-',resourceGroup().location)]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "parameters": {},
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "variables": {},
+          "resources": [],
+          "outputs": {}
+        }
+      }
+    },
+    {
+      "apiVersion": "2017-06-01",
+      "type": "Microsoft.Resources/deployments",
+      "name": "[concat('loop-', copyIndex(1))]",
+      "dependsOn": [
+        "[concat('loop-', copyIndex())]"
+      ],
+      "copy": {
+        "name": "iterator",
+        "count": "[length(parameters('networkSecurityGroupsSettings').securityRules)]"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "name": "[concat('nsg-',parameters('networkSecurityGroupsSettings').name,'-',parameters('publicOrPrivate'),'-',parameters('environment'),'-',resourceGroup().location, '/' , parameters('networkSecurityGroupsSettings').securityRules[copyIndex()].name)]",
+              "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+              "apiVersion": "2017-06-01",
+              "location": "[resourceGroup().location]",
+              "properties": {
+                "description": "[parameters('networkSecurityGroupsSettings').securityRules[copyIndex()].description]",
+                "priority": "[parameters('networkSecurityGroupsSettings').securityRules[copyIndex()].priority]",
+                "protocol": "[parameters('networkSecurityGroupsSettings').securityRules[copyIndex()].protocol]",
+                "sourcePortRange": "[parameters('networkSecurityGroupsSettings').securityRules[copyIndex()].sourcePortRange]",
+                "destinationPortRanges": "[parameters('networkSecurityGroupsSettings').securityRules[copyIndex()].destinationPortRanges]",
+                "sourceAddressPrefix": "[parameters('networkSecurityGroupsSettings').securityRules[copyIndex()].sourceAddressPrefix]",
+                "destinationAddressPrefix": "[parameters('networkSecurityGroupsSettings').securityRules[copyIndex()].destinationAddressPrefix]",
+                "access": "[parameters('networkSecurityGroupsSettings').securityRules[copyIndex()].access]",
+                "direction": "[parameters('networkSecurityGroupsSettings').securityRules[copyIndex()].direction]"
+              }
+            }
+          ],
+          "outputs": {}
+        }
+      }
+    }
+  ],
+  "outputs": {}
+}

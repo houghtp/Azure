@@ -1,0 +1,214 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "department": {
+      "type": "string"
+    },   
+    "environment": {
+      "type": "string",
+      "allowedValues": [ "prod", "dev" ]
+    },
+    "vpnType": {
+      "type": "string",
+      "defaultValue": "RouteBased",
+      "allowedValues": [
+        "RouteBased",
+        "PolicyBased"
+      ],
+	  "metadata": {
+        "description": "Route based or policy based"
+      },
+    },
+    "localGatewayIpAddress": {
+      "type": "string",
+      "defaultValue": "1.1.1.1",
+      "metadata": {
+        "description": "Public IP of your onPremise VPN device"
+      }
+    },
+    "localAddressPrefix": {
+      "type": "array",
+      "defaultValue": [
+        "192.168.0.0/16",
+        "172.16.0.0/12"
+      ],
+      "metadata": {
+        "description": "CIDR block representing the address space of the OnPremise VPN network's Subnet"
+      }
+    },
+    "azureVNetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "10.3.0.0/16",
+      "metadata": {
+        "description": "CIDR block representing the address space of the Azure VNet"
+      }
+    },
+    "subnetPrefix": {
+      "type": "string",
+      "defaultValue": "10.3.1.0/24",
+      "metadata": {
+        "description": "CIDR block for VM subnet, subset of azureVNetAddressPrefix address space"
+      }
+    },
+    "gatewaySubnetPrefix": {
+      "type": "string",
+      "defaultValue": "10.3.200.0/29",
+      "metadata": {
+        "description": "CIDR block for gateway subnet, subset of azureVNetAddressPrefix address space"
+      }
+    },
+    "gatewayPublicIPName": {
+      "type": "string",
+      "defaultValue": "azureGatewayIP",
+      "metadata": {
+        "description": "Arbitrary name for public IP resource used for the new azure gateway"
+      }
+    },
+    "gatewaySku": {
+      "type": "string",
+      "defaultValue": "Basic",
+      "allowedValues": [
+        "Basic",
+        "Standard",
+        "HighPerformance"
+      ],
+      "metadata": {
+        "description": "The Sku of the Gateway. This must be one of Basic, Standard or HighPerformance."
+      }
+    },
+    "sharedKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Shared key (PSK) for IPSec tunnel"
+      }
+    }
+  },
+  "variables": {
+    "localNetworkGatewayName": "[concat('lng-',parameters('department'),'-',parameters('environment'),'-',resourceGroup().location)]",
+    "virtualNetworkGatewayName": "[concat('vng-',parameters('department'),'-',parameters('environment'),'-',resourceGroup().location)]",
+    "gatewayPublicIPName": "[concat('pip-',parameters('department'),'-',parameters('environment'),'-',resourceGroup().location)]",
+    "vpnConnectionName": "[concat('vpn-',parameters('department'),'-',parameters('environment'),'-',resourceGroup().location)]",
+    "virtualNetworkName": "[concat('vnet-transit-',parameters('department'),'-',parameters('environment'),'-',resourceGroup().location)]",
+    "gatewaySubnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets/', variables('virtualNetworkName'),'GatewaySubnet')]"
+
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/localNetworkGateways",
+      "name": "[variables('localNetworkGatewayName')]",
+      "location": "[resourceGroup().location]",
+	  "tags": {
+        "Environment": "[parameters('environment')]",
+        "Department": "[parameters('department')]"
+      },
+      "properties": {
+        "localNetworkAddressSpace": {
+          "addressPrefixes": "[parameters('localAddressPrefix')]"
+        },
+        "gatewayIpAddress": "[parameters('localGatewayIpAddress')]"
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "name": "[variables('vpnConnectionName')]",
+      "type": "Microsoft.Network/connections",
+      "location": "[resourceGroup().location]",
+	  "tags": {
+        "Environment": "[parameters('environment')]",
+        "Department": "[parameters('department')]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworkGateways/', variables('virtualNetworkGatewayName'))]",
+        "[concat('Microsoft.Network/localNetworkGateways/', variables('localNetworkGatewayName'))]"
+      ],
+      "properties": {
+        "virtualNetworkGateway1": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworkGateways', variables('virtualNetworkGatewayName'))]"
+        },
+        "localNetworkGateway2": {
+          "id": "[resourceId('Microsoft.Network/localNetworkGateways', variables('localNetworkGatewayName'))]"
+        },
+        "connectionType": "IPsec",
+        "routingWeight": 10,
+        "sharedKey": "[parameters('sharedKey')]"
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[variables('virtualNetworkName')]",
+      "location": "[resourceGroup().location]",
+	  "tags": {
+        "Environment": "[parameters('environment')]",
+        "Department": "[parameters('department')]"
+      },
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('azureVNetAddressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "GatewaySubnet",
+            "properties": {
+              "addressPrefix": "[parameters('gatewaySubnetPrefix')]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('gatewayPublicIPName')]",
+      "location": "[resourceGroup().location]",
+	  "tags": {
+        "Environment": "[parameters('environment')]",
+        "Department": "[parameters('department')]"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic"
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/virtualNetworkGateways",
+      "name": "[variables('virtualNetworkGatewayName')]",
+      "location": "[resourceGroup().location]",
+	  "tags": {
+        "Environment": "[parameters('environment')]",
+        "Department": "parameters('department')"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('gatewayPublicIPName'))]",
+        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('gatewaySubnetRef')]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('gatewayPublicIPName'))]"
+              }
+            },
+            "name": "vnetGatewayConfig"
+          }
+        ],
+        "sku": {
+          "name": "[parameters('gatewaySku')]",
+          "tier": "[parameters('gatewaySku')]"
+        },
+        "gatewayType": "Vpn",
+        "vpnType": "[parameters('vpnType')]",
+        "enableBgp": "false"
+      }
+    }
+  ]
+}

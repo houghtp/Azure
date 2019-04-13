@@ -1,0 +1,76 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "department": {
+      "type": "string"
+    },
+    "environment": {
+      "type": "string",
+      "allowedValues": [ "prod", "dev" ]
+    },
+	"publicOrPrivate": {
+      "type": "string",
+      "allowedValues": [ "public", "private" ]
+    },
+    "vnetSettings": {
+      "type": "object"      
+    },
+    "subnetSettings": {
+      "type": "array"      
+    }
+  },
+  "variables": {
+    "vnetName": "[concat('vnet-resources-',parameters('department'),'-',parameters('publicOrPrivate'),'-',parameters('environment'),'-',resourceGroup().location)]"
+  },
+  "resources": [
+    {
+      "name": "[variables('vnetName')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2018-12-01",
+      "dependsOn": [],
+      "tags": {
+        "Environment": "[parameters('environment')]",
+        "Department": "[parameters('department')]"
+      },
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('vnetSettings').addressPrefixes]"
+          ]
+        }
+      }
+    },
+    {
+      "copy": {
+        "name": "subnetLoop",
+        "count": "[length(parameters('subnetSettings'))]",
+        "mode": "Serial"
+      },
+      "apiVersion": "2018-12-01",
+      "type": "Microsoft.Network/virtualNetworks/subnets",
+      "name": "[concat(variables('vnetName'), '/', 'sub-',parameters('subnetSettings')[copyIndex()].name,'-',parameters('department'),'-',parameters('publicOrPrivate'),'-',parameters('environment'),'-',resourceGroup().location)]",
+	  "properties": {
+        "addressPrefix": "[parameters('subnetSettings')[copyIndex()].addressPrefix]",
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat('nsg-',parameters('subnetSettings')[copyIndex()].name,'-',parameters('publicOrPrivate'),'-',parameters('environment'),'-',resourceGroup().location))]"
+        },
+        "serviceEndpoints": [
+          {
+            "provisioningState": "Succeeded",
+            "service": "Microsoft.Storage",
+            "locations": [
+              "uksouth",
+              "ukwest"
+            ]
+          }
+        ]
+      },
+      "dependsOn": [
+        "[variables('vnetName')]"
+      ]
+    }
+  ],
+  "outputs": {}
+}

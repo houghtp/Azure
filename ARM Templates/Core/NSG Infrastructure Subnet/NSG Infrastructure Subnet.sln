@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.539
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "NSG Infrastructure Subnet", "NSG Infrastructure Subnet\NSG Infrastructure Subnet.deployproj", "{75F8040A-E1FB-483C-A788-AD852A1121CB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{75F8040A-E1FB-483C-A788-AD852A1121CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75F8040A-E1FB-483C-A788-AD852A1121CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75F8040A-E1FB-483C-A788-AD852A1121CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75F8040A-E1FB-483C-A788-AD852A1121CB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F26C5987-6390-4300-A60F-1438B2082538}
+	EndGlobalSection
+EndGlobal
