@@ -25,7 +25,7 @@
   "variables": {
     "transitVNet": "[resourceId('Microsoft.Network/virtualNetworks', parameters('existingTransitVirtualNetworkName'))]",
     "remoteVNet": "[resourceId('Microsoft.Network/virtualNetworks', parameters('existingRemoteVirtualNetworkName'))]",
-    "peeringName1": "[concat(parameters('existingTransitVirtualNetworkName'), '/', 'vnetpeer-',parameters('department'),'-',parameters('environment'),'-',parameters('existingTransitVirtualNetworkName'),'-to-',parameters('existingRemoteVirtualNetworkName'))]",
+    "peeringName1": "[concat(parameters('existingTransitVirtualNetworkName'), '/', 'peer-',parameters('existingTransitVirtualNetworkName'),'-to-',parameters('existingRemoteVirtualNetworkName'))]",
     "peeringName2": "[concat(parameters('existingRemoteVirtualNetworkName'), '/', 'peer-',parameters('existingRemoteVirtualNetworkName'),'-to-',parameters('existingTransitVirtualNetworkName'))]"
   },
   "resources": [
