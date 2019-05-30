@@ -4,7 +4,7 @@
   "parameters": {
     "networkSecurityGroupsSettings": {
       "value": {
-        "name": "infrastructure",
+        "name": "inf",
         "securityRules": [
           {
             "name": "Remote Management Allow",

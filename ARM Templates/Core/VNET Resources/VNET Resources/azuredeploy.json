@@ -39,6 +39,11 @@
           "addressPrefixes": [
             "[parameters('vnetSettings').addressPrefixes]"
           ]
+        },
+		"dhcpOptions": {
+            "dnsServers": [
+                "[parameters('vnetSettings').dnsServers]"
+            ]
         }
       }
     },

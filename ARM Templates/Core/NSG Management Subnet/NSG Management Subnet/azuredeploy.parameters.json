@@ -4,7 +4,7 @@
   "parameters": {
     "networkSecurityGroupsSettings": {
       "value": {
-        "name": "management",
+        "name": "mgmt",
         "securityRules": [
           {
             "name": "Remote Management Allow",

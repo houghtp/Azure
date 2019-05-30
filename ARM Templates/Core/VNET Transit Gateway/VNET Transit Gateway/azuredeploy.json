@@ -18,7 +18,7 @@
       ],
 	  "metadata": {
         "description": "Route based or policy based"
-      },
+      }
     },
     "localGatewayIpAddress": {
       "type": "string",
@@ -91,7 +91,6 @@
     "vpnConnectionName": "[concat('vpn-',parameters('department'),'-',parameters('environment'),'-',resourceGroup().location)]",
     "virtualNetworkName": "[concat('vnet-transit-',parameters('department'),'-',parameters('environment'),'-',resourceGroup().location)]",
     "gatewaySubnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets/', variables('virtualNetworkName'),'GatewaySubnet')]"
-
   },
   "resources": [
     {

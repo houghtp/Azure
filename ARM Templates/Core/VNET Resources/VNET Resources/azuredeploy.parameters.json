@@ -4,30 +4,31 @@
     "parameters":  {
                        "vnetSettings":  {
                                             "value":  {
-                                                          "addressPrefixes":  "172.30.0.0/16"
+                                                          "addressPrefixes":  "172.23.0.0/16",
+                                                          "dnsServers":  "172.23.0.10"
                                                       }
                                         },
                        "subnetSettings":  {
                                               "value":  [
                                                             {
                                                                 "name":  "web",
-                                                                "addressPrefix":  "172.30.0.0/24"
+                                                                "addressPrefix":  "172.23.0.0/24"
                                                             },
                                                             {
                                                                 "name":  "app",
-                                                                "addressPrefix":  "172.30.1.0/24"
+                                                                "addressPrefix":  "172.23.1.0/24"
                                                             },
                                                             {
                                                                 "name":  "db",
-                                                                "addressPrefix":  "172.30.2.0/24"
+                                                                "addressPrefix":  "172.23.2.0/24"
                                                             },
                                                             {
-                                                                "name":  "infrastructure",
-                                                                "addressPrefix":  "172.30.3.0/24"
+                                                                "name":  "inf",
+                                                                "addressPrefix":  "172.23.3.0/24"
                                                             },
                                                             {
-                                                                "name":  "management",
-                                                                "addressPrefix":  "172.30.4.0/24"
+                                                                "name":  "mgmt",
+                                                                "addressPrefix":  "172.23.4.0/24"
                                                             }
                                                         ]
                                           }

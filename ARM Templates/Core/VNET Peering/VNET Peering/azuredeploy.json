@@ -20,7 +20,7 @@
       "metadata": {
         "description": "Set the remote VNet name. This should be the Resources VNET."
       }
-    },
+    }
   },
   "variables": {
     "transitVNet": "[resourceId('Microsoft.Network/virtualNetworks', parameters('existingTransitVirtualNetworkName'))]",
